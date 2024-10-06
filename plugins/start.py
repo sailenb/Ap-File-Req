@@ -1,24 +1,23 @@
-#(©)CodeXBotz
+#(©)NextGenBotz
+
 
 
 
 
 import os
 import asyncio
+import sys
 from pyrogram import Client, filters, __version__
-from pyrogram.enums import ParseMode
+from pyrogram.enums import ParseMode, ChatMemberStatus
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
+from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated, UserNotParticipant
 
 from bot import Bot
-from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT
-from helper_func import subscribed, encode, decode, get_messages
-from database.database import add_user, del_user, full_userbase, present_user
+from config import ADMINS, OWNER_ID, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT
+from helper_func import subscribed1, subscribed2, encode, decode, get_messages
+from database.database import add_user, del_user, full_userbase, present_user, is_admin
 
-
-
-
-@Bot.on_message(filters.command('start') & filters.private & subscribed)
+@Bot.on_message(filters.command('start') & filters.private & subscribed1 & subscribed2)
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
     if not await present_user(id):
@@ -88,11 +87,11 @@ async def start_command(client: Client, message: Message):
         reply_markup = InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("😊 About Me", callback_data = "about"),
-                    InlineKeyboardButton("🔒 Close", callback_data = "close")
+                    InlineKeyboardButton("📝 About Me", callback_data = "about"),
+                    InlineKeyboardButton(" ⚡ Close", callback_data = "close")
                 ]
             ]
-        )
+                )
         await message.reply_text(
             text = START_MSG.format(
                 first = message.from_user.first_name,
@@ -105,26 +104,23 @@ async def start_command(client: Client, message: Message):
             disable_web_page_preview = True,
             quote = True
         )
-        return
+        return   
 
-    
-#=====================================================================================##
-
-WAIT_MSG = """"<b>Processing ...</b>"""
-
-REPLY_ERROR = """<code>Use this command as a replay to any telegram message with out any spaces.</code>"""
 
 #=====================================================================================##
 
-    
-    
+WAIT_MSG = """"<b>Processing ....</b>"""
+
+REPLY_ERROR = """<code>Use this command as a reply to any telegram message with out any spaces.</code>"""
+
+#=====================================================================================##
+
 @Bot.on_message(filters.command('start') & filters.private)
 async def not_joined(client: Client, message: Message):
     buttons = [
         [
-            InlineKeyboardButton(
-                "Join Channel",
-                url = client.invitelink)
+            InlineKeyboardButton(text="⚡ Join Channel", url=client.invitelink),
+            InlineKeyboardButton(text="⚡ Join Channel", url=client.invitelink2),
         ]
     ]
     try:
@@ -138,6 +134,9 @@ async def not_joined(client: Client, message: Message):
         )
     except IndexError:
         pass
+    
+    
+
 
     await message.reply(
         text = FORCE_MSG.format(
@@ -152,14 +151,22 @@ async def not_joined(client: Client, message: Message):
         disable_web_page_preview = True
     )
 
-@Bot.on_message(filters.command('users') & filters.private & filters.user(ADMINS))
+@Bot.on_message(filters.command('users') & filters.private)
 async def get_users(client: Bot, message: Message):
+    user_id = message.from_user.id
+    is_user_admin = await is_admin(user_id)
+    if not is_user_admin and user_id != OWNER_ID:       
+        return
     msg = await client.send_message(chat_id=message.chat.id, text=WAIT_MSG)
     users = await full_userbase()
     await msg.edit(f"{len(users)} users are using this bot")
 
-@Bot.on_message(filters.private & filters.command('broadcast') & filters.user(ADMINS))
+@Bot.on_message(filters.command('broadcast') & filters.private)
 async def send_text(client: Bot, message: Message):
+    user_id = message.from_user.id
+    is_user_admin = await is_admin(user_id)
+    if not is_user_admin and user_id != OWNER_ID:        
+        return
     if message.reply_to_message:
         query = await full_userbase()
         broadcast_msg = message.reply_to_message
@@ -169,7 +176,7 @@ async def send_text(client: Bot, message: Message):
         deleted = 0
         unsuccessful = 0
         
-        pls_wait = await message.reply("<i>Broadcasting Message.. This will Take Some Time</i>")
+        pls_wait = await message.reply("<i>Broadcast ho rha till then FUCK OFF </i>")
         for chat_id in query:
             try:
                 await broadcast_msg.copy(chat_id)
@@ -203,3 +210,16 @@ Unsuccessful: <code>{unsuccessful}</code></b>"""
         msg = await message.reply(REPLY_ERROR)
         await asyncio.sleep(8)
         await msg.delete()
+
+@Bot.on_message(filters.private & filters.command("restart") & filters.user(OWNER_ID))
+async def restart_bot(b, m):
+    restarting_message = await m.reply_text(f"⚡️<b><i>Restarting....</i></b>", disable_notification=True)
+
+    # Wait for 3 seconds
+    await asyncio.sleep(3)
+
+    # Update message after the delay
+    await restarting_message.edit_text("✅ <b><i>Successfully Restarted</i></b>")
+
+    # Restart the bot
+    os.execl(sys.executable, sys.executable, *sys.argv)
