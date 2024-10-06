@@ -39,7 +39,7 @@ FORCE_SUB_CHANNEL2 = int(os.environ.get("FORCE_SUB_CHANNEL2", "-1002055777287"))
 TG_BOT_WORKERS = int(os.environ.get("TG_BOT_WORKERS", "20"))
 
 #start message
-START_MSG = os.environ.get("START_MESSAGE", "<b><b>👋👋 Hey {first} ! </b>\n\n<b>I'm a File Store Bot🤖...! </b>\n\nI Can <b>Store Private Files</b> in Specified Channel and other users can access Private Files From a Special Link....!\n\n⚡<b>Powered By - </b>@NextGenBotz")
+START_MSG = os.environ.get("START_MESSAGE", "<b><b>👋👋 Hey {first} ! </b>\n\n<b>I'm a File Store Bot🤖...! </b>\n\nI Can <b>Store Private Files</b> in Specified Channel and other users can access Private Files From a Special Link....!\n\n⚡<b>Powered By - </b>@About_Yae_Miko")
 try:
     ADMINS=[]
     for x in (os.environ.get("ADMINS", "5787502520").split()):
