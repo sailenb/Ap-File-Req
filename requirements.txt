@@ -2,9 +2,9 @@
 pyrogram
 TgCrypto
 pyromod==1.5
+motor
 # --- For-Database ------------ #
 pymongo
 dnspython
-git+https://github.com/vpcreatz/pyrofork-adv.git
 # --- For-Web-Response ------- #
 aiohttp
