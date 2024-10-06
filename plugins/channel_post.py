@@ -1,4 +1,4 @@
-#(©)Codexbotz
+#(©)NextGenBotz
 
 import asyncio
 from pyrogram import filters, Client
@@ -8,14 +8,19 @@ from pyrogram.errors import FloodWait
 from bot import Bot
 from config import ADMINS, CHANNEL_ID, DISABLE_CHANNEL_BUTTON
 from helper_func import encode
+from database.database import is_admin
 
-@Bot.on_message(filters.private & filters.user(ADMINS) & ~filters.command(['start','users','broadcast','batch','genlink','stats']))
+@Bot.on_message(filters.private & ~filters.command(['start', 'users', 'broadcast', 'restart', 'total', 'clear', 'batch', 'genlink', 'stats']))
 async def channel_post(client: Client, message: Message):
+    user_id = message.from_user.id
+    is_user_admin = await is_admin(user_id)
+    if not is_user_admin and user_id not in ADMINS:        
+        return
     reply_text = await message.reply_text("Please Wait...!", quote = True)
     try:
         post_message = await message.copy(chat_id = client.db_channel.id, disable_notification=True)
     except FloodWait as e:
-        await asyncio.sleep(e.value)
+        await asyncio.sleep(e.x)
         post_message = await message.copy(chat_id = client.db_channel.id, disable_notification=True)
     except Exception as e:
         print(e)
@@ -31,13 +36,7 @@ async def channel_post(client: Client, message: Message):
     await reply_text.edit(f"<b>Here is your link</b>\n\n{link}", reply_markup=reply_markup, disable_web_page_preview = True)
 
     if not DISABLE_CHANNEL_BUTTON:
-        try:
-            await post_message.edit_reply_markup(reply_markup)
-        except FloodWait as e:
-            await asyncio.sleep(e.value)
-            await post_message.edit_reply_markup(reply_markup)
-        except Exception:
-            pass
+        await post_message.edit_reply_markup(reply_markup)
 
 @Bot.on_message(filters.channel & filters.incoming & filters.chat(CHANNEL_ID))
 async def new_post(client: Client, message: Message):
@@ -52,8 +51,6 @@ async def new_post(client: Client, message: Message):
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
     try:
         await message.edit_reply_markup(reply_markup)
-    except FloodWait as e:
-        await asyncio.sleep(e.value)
-        await message.edit_reply_markup(reply_markup)
-    except Exception:
+    except Exception as e:
+        print(e)
         pass
