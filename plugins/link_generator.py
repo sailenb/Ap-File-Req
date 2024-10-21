@@ -42,7 +42,6 @@ async def batch(client: Client, message: Message):
     base64_string = await encode(string)
     link = f"https://t.me/{client.username}?start={base64_string}"
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]]),
-    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Premium Channel", url=f'https://t.me/+PY35ZUH_GEQ4MmIx={link}')]])
     await second_message.reply_text(f"<b>📥🔗 — Download Link — 📥🔗\n\nUploaded By:  @Alya_x_Yuki</b>\n\n{link}", quote=True, reply_markup=reply_markup)
 
 @Bot.on_message(filters.command('genlink') & filters.private)
@@ -66,6 +65,4 @@ async def link_generator(client: Client, message: Message):
     base64_string = await encode(f"get-{msg_id * abs(client.db_channel.id)}")
     link = f"https://t.me/{client.username}?start={base64_string}"
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
-    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Premium Channel", url=f'https://t.me/+PY35ZUH_GEQ4MmIx={link}')]])
-    
     await channel_message.reply_text(f"<b>Here is your link</b>\n\n{link}", quote=True, reply_markup=reply_markup)
