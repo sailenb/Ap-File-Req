@@ -32,6 +32,7 @@ async def channel_post(client: Client, message: Message):
     link = f"https://t.me/{client.username}?start={base64_string}"
 
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
+    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Premium Channel", url=f'https://t.me/+PY35ZUH_GEQ4MmIx={link}')]])
 
     await reply_text.edit(f"<b>📥🔗 — Download Link — 📥🔗\n\nUploaded By:  @Alya_x_Yuki</b>\n\n{link}", reply_markup=reply_markup, disable_web_page_preview = True)
 
