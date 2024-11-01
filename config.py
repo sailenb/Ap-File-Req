@@ -10,7 +10,7 @@ from os import environ
 
 
 #Bot token @Botfather
-TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "6613733493:AAHtEuKxjmllDjSL8xGFzgFaL3QYeezeYo0")
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "7859974796:AAHXrJ5k9Z2PEHc2NtBt-zNpbHHURWVO5lE")
 
 #Your API ID from my.telegram.org
 APP_ID = int(os.environ.get("APP_ID", "29759992"))
@@ -19,13 +19,13 @@ APP_ID = int(os.environ.get("APP_ID", "29759992"))
 API_HASH = os.environ.get("API_HASH", "61f150cdca64b2916fa499d107393140")
 
 #Your db channel Id
-CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "-1002205743743"))
+CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "-1002438993262"))
 
 #OWNER ID
-OWNER_ID = int(os.environ.get("OWNER_ID", "6768137528"))
+OWNER_ID = int(os.environ.get("OWNER_ID", "5064392719"))
 
 #Port
-PORT = os.environ.get("PORT", "5251")
+PORT = os.environ.get("PORT", "5271")
 
 #Database
 DB_URI = os.environ.get("DATABASE_URL", "mongodb+srv://zxbots:zXaBhi2315a@cluster0.lbbygpm.mongodb.net/?retryWrites=true&w=majorit")
